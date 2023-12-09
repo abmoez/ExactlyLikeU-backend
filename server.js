@@ -10,10 +10,12 @@ dotenv.config({ path: "./config.env" });
 const app = require("./app");
 
 const sequelize = require("./utils/database");
+const UserModel = require("./models/userModel");
+
 sequelize
-  .sync()
-  .then(() => {
-    console.log("database connected succesfully");
+  .sync({ alter: true })
+  .then((results) => {
+    console.log("DB connected");
   })
   .catch((err) => {
     console.log(err);
