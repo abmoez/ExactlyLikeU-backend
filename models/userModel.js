@@ -1,4 +1,4 @@
-const { Sequelize, DataTypes }=require("sequelize");
+const { Sequelize, DataTypes } = require("sequelize");
 const sequelize = require("../utils/database");
 
 const User = sequelize.define(
@@ -18,33 +18,27 @@ const User = sequelize.define(
     username: {
       type: Sequelize.STRING,
       unique: true,
-      allowNull: false
-    },
-    nickname: {
-      type: Sequelize.STRING,
-      unique:false,
-      allowNull: true,
-      defaultValue:"AppUser"
+      allowNull: false,
     },
     gender: {
       type: DataTypes.STRING,
       allowNull: false,
       validate: {
-        isIn: [['male', 'female']] // Validation to allow only 'male' or 'female'
-      }
+        isIn: [["male", "female"]], // Validation to allow only 'male' or 'female'
+      },
     },
     status: {
       type: DataTypes.STRING,
       allowNull: false,
-      defaultValue: 'single', // Default value for status
+      defaultValue: "single", // Default value for status
       validate: {
-        isIn: [['single', 'married', 'divorced', 'widowed', 'other']]
-       } // Valid status values
+        isIn: [["single", "married", "divorced", "widowed", "other"]],
+      }, // Valid status values
     },
-    score:{
+    score: {
       type: Sequelize.INTEGER,
       allowNull: false,
-      defaultValue:0
+      defaultValue: 0,
     },
     birthdate: {
       type: DataTypes.DATE,
@@ -52,8 +46,8 @@ const User = sequelize.define(
     },
     createdAt: {
       type: DataTypes.DATE,
-      defaultValue: Sequelize.literal('CURRENT_TIMESTAMP'), // Set default value to current timestamp
-      allowNull: false
+      defaultValue: Sequelize.literal("CURRENT_TIMESTAMP"), // Set default value to current timestamp
+      allowNull: false,
     },
     password: {
       type: Sequelize.STRING,
@@ -68,7 +62,7 @@ const User = sequelize.define(
       type: Sequelize.BIGINT,
       defaultValue: null,
     },
-    passwordChangedAt: DataTypes.DATE
+    passwordChangedAt: DataTypes.DATE,
   },
   {
     tableName: "users",
@@ -77,9 +71,12 @@ const User = sequelize.define(
 );
 
 // Define instance method 'changedPasswordAfter'
-User.prototype.changedPasswordAfter = function (JTWTimestamp) {
+User.prototype.changedPasswordAfter = function(JTWTimestamp) {
   if (this.passwordChangedAt) {
-    const changedTimestamp = parseInt(this.passwordChangedAt.getTime() / 1000, 10);
+    const changedTimestamp = parseInt(
+      this.passwordChangedAt.getTime() / 1000,
+      10
+    );
     return JTWTimestamp < changedTimestamp;
   }
   return false;
