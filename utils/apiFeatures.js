@@ -1,53 +1,57 @@
 class APIFeatures {
-  constructor(query, queryString) {
+  constructor(query, queryObj) {
     this.query = query;
-    this.queryString = queryString;
+    this.queryObj = queryObj;
   }
 
   filter() {
-    const queryObj = { ...this.queryString };
+    const where = { ...this.queryObj };
     const excludedFields = ['page', 'sort', 'limit', 'fields'];
-    excludedFields.forEach(el => delete queryObj[el]);
+    excludedFields.forEach(el => delete where[el]);
 
-    // 1B) Advanced filtering
-    let queryStr = JSON.stringify(queryObj);
-    queryStr = queryStr.replace(/\b(gte|gt|lte|lt)\b/g, match => `$${match}`);
+    // Advanced filtering for Sequelize
+    Object.keys(where).forEach(key => {
+      where[key] = { [Sequelize.Op.eq]: where[key] };
+    });
 
-    this.query = this.query.find(JSON.parse(queryStr));
+    this.query.where = where;
 
     return this;
   }
 
   sort() {
-    if (this.queryString.sort) {
-      const sortBy = this.queryString.sort.split(',').join(' ');
-      this.query = this.query.sort(sortBy);
+    if (this.queryObj.sort) {
+      const sortBy = this.queryObj.sort.split(',').map(field => {
+        return field.startsWith('-') ? [field.slice(1), 'DESC'] : [field, 'ASC'];
+      });
+      this.query.order = sortBy;
     } else {
-      this.query = this.query.sort('-createdAt');
+      // Default sorting by createdAt in descending order
+      this.query.order = [['createdAt', 'DESC']];
     }
 
     return this;
   }
 
   limitFields() {
-    if (this.queryString.fields) {
-      const fields = this.queryString.fields.split(',').join(' ');
-      this.query = this.query.select(fields);
-    } else {
-      this.query = this.query.select('-__v');
+    if (this.queryObj.fields) {
+      const fields = this.queryObj.fields.split(',');
+      this.query.attributes = fields;
     }
 
     return this;
   }
 
   paginate() {
-    const page = this.queryString.page * 1 || 1;
-    const limit = this.queryString.limit * 1 || 100;
-    const skip = (page - 1) * limit;
+    const page = this.queryObj.page || 1;
+    const limit = this.queryObj.limit || 100;
+    const offset = (page - 1) * limit;
 
-    this.query = this.query.skip(skip).limit(limit);
+    this.query.offset = offset;
+    this.query.limit = limit;
 
     return this;
   }
 }
+
 module.exports = APIFeatures;
