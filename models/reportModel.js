@@ -14,7 +14,6 @@ const Report = sequelize.define(
       type: Sequelize.INTEGER,
       allowNull: false,
     },
-    dateOfReport: DataTypes.DATE,
     typeOfReport: {
       type: DataTypes.STRING,
       allowNull: false,
@@ -25,7 +24,8 @@ const Report = sequelize.define(
   },
   {
     tableName: "reports",
-    timestamps: false,
+    timestamps: true,
+    createdAt: "dateOfReport",
   }
 );
 module.exports = Report;

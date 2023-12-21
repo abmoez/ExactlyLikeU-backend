@@ -1,24 +1,24 @@
-const { Sequelize, DataTypes }=require("sequelize");
+const { Sequelize, DataTypes } = require("sequelize");
 const sequelize = require("../utils/database");
 
 const Blocked = sequelize.define(
   "blocked",
   {
     id: {
-        type: Sequelize.INTEGER,
-        autoIncrement: true,
-        allowNull: false,
-        primaryKey: true,
+      type: Sequelize.INTEGER,
+      autoIncrement: true,
+      allowNull: false,
+      primaryKey: true,
     },
-    blockedUserId:{
-       type: Sequelize.INTEGER,
-       allowNull: false
+    blockedUserId: {
+      type: Sequelize.INTEGER,
+      allowNull: false,
     },
-    dateOfBlock:DataTypes.DATE,
   },
   {
     tableName: "BlockedList",
-    timestamps: false,
+    timestamps: true,
+    createdAt: "dateOfBlock",
   }
-  );
-  module.exports = Blocked;
+);
+module.exports = Blocked;
