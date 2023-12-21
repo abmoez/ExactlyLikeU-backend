@@ -11,29 +11,34 @@ router.get("/logout", authController.logout);
 router.post("/forgotPassword", authController.forgotPassword);
 router.patch("/resetPassword/", authController.resetPassword);
 
-// For testing 
-router.get("/test", authController.protect,
-authController.restrictTo('admin','user'),userController.test)
-// all the following routes to be modefied
-// Protect all routes after this middleware
-router.use(authController.protect);
+// For testing
+router.get(
+  "/test",
+  authController.protect,
+  authController.restrictTo("admin", "user"),
+  userController.test
+);
 
-router.patch("/updateMyPassword", authController.updatePassword);
-router.get("/me", userController.getMe, userController.getUser);
-router.patch("/updateMe", userController.updateMe);
-router.delete("/deleteMe", userController.deleteMe);
+// // all the following routes to be modefied
+// // Protect all routes after this middleware
+// router.use(authController.protect);
 
-router.use(authController.restrictTo("admin"));
+// router.patch("/updateMyPassword", authController.updatePassword);
+// router.get("/me", userController.getMe, userController.getUser);
+// router.patch("/updateMe", userController.updateMe);
+// router.delete("/deleteMe", userController.deleteMe);
 
-router
-  .route("/")
-  .get(userController.getAllUsers)
-  .post(userController.createUser);
+// router.use(authController.restrictTo("admin"));
 
-router
-  .route("/:id")
-  .get(userController.getUser)
-  .patch(userController.updateUser)
-  .delete(userController.deleteUser);
+// router
+//   .route("/")
+//   .get(userController.getAllUsers)
+//   .post(userController.createUser);
+
+// router
+//   .route("/:id")
+//   .get(userController.getUser)
+//   .patch(userController.updateUser)
+//   .delete(userController.deleteUser);
 
 module.exports = router;

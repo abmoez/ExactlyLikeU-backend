@@ -4,10 +4,10 @@ const authController = require("../controllers/authController");
 
 const router = express();
 
-router
-  .use("/:postID")
-  .post()
-  .delete();
+// router
+//   .use("/:postID")
+//   .post()
+//   .delete();
 
 // add react POST :postID
 
@@ -16,3 +16,5 @@ router
 // get agreed reacts GET :postID
 
 // get disagreed reacts GET :postID
+
+module.exports = router;

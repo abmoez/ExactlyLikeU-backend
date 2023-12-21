@@ -15,3 +15,5 @@ const router = express();
 // get posts (profile) GET :userID
 
 // get trends GET
+
+module.exports = router;
