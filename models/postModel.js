@@ -25,6 +25,7 @@ const Post = sequelize.define(
     clicks: {
       type: DataTypes.INTEGER,
       allowNull: false,
+      defaultValue: 0,
     },
   },
   {
