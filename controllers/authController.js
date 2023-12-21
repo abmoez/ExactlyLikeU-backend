@@ -40,10 +40,9 @@ const createSendToken = (user, statusCode, res) => {
 
 exports.signup = catchAsync(async (req, res, next) => {
   if (req.body.password !== req.body.passwordConfirm) {
-    res.status(400).json({
-      status: "faild",
-      message: "pasword should match the confirmation password",
-    });
+    return next(
+      new AppError("password and passwordConfirm should be equal", 400)
+    );
   }
   req.body.password = await bcrypt.hash(req.body.password, 12);
   const newUser = {
@@ -51,9 +50,9 @@ exports.signup = catchAsync(async (req, res, next) => {
     name: req.body.name,
     username: req.body.username,
     password: req.body.password,
-    gender:req.body.gender,
-    status:req.body.status,
-    birthdate:req.body.birthdate
+    gender: req.body.gender,
+    status: req.body.status,
+    birthdate: req.body.birthdate,
   };
   await User.create(newUser);
 
@@ -259,13 +258,11 @@ exports.resetPassword = catchAsync(async (req, res, next) => {
   }
 
   user.password = await bcrypt.hash(req.body.password, 12);
-   // 3) Update tempCode and tempCodeCreatedAt property for the user
-   user.tempCode = "";
-   user.tempCodeCreatedAt = 0;
-   
-  await user.save();
+  // 3) Update tempCode and tempCodeCreatedAt property for the user
+  user.tempCode = "";
+  user.tempCodeCreatedAt = 0;
 
- 
+  await user.save();
 
   // 4) Log the user in, send JWT
   createSendToken(user, 200, res);
@@ -275,7 +272,9 @@ exports.resetPassword = catchAsync(async (req, res, next) => {
 
 exports.updatePassword = catchAsync(async (req, res, next) => {
   // 1) Get user from collection
-  const user = await User.findByPk(req.user.id, { attributes: { include: ['password'] } });
+  const user = await User.findByPk(req.user.id, {
+    attributes: { include: ["password"] },
+  });
 
   // 2) Check if POSTed current password is correct
   if (!(await user.correctPassword(req.body.passwordCurrent, user.password))) {
@@ -284,11 +283,10 @@ exports.updatePassword = catchAsync(async (req, res, next) => {
 
   // 3) If so, update password
   if (!req.body.password) {
-    return next(new AppError('Please provide new password ', 400));
-}
-user.password = req.body.password;
-await user.save();
-
+    return next(new AppError("Please provide new password ", 400));
+  }
+  user.password = req.body.password;
+  await user.save();
 
   // 4) Log user in, send JWT
   createSendToken(user, 200, res);
