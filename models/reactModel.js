@@ -10,6 +10,10 @@ const React = sequelize.define(
       allowNull: false,
       primaryKey: true,
     },
+    status: {
+      type: DataTypes.BOOLEAN,
+      allowNull: false,
+    },
   },
   {
     tableName: "reacts",
