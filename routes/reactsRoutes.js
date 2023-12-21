@@ -12,11 +12,11 @@ router
 
 // get agreed reacts GET :postID
 router
-  .route("/agreedReacts/:postID")
+  .route("/:postID/agreed")
   .get(authController.protect, reactsController.getAgreedReactCount);
 // get disagreed reacts GET :postID
 router
-  .route("/notAgreedReacts/:postID")
+  .route("/:postID/notAgreed")
   .get(authController.protect, reactsController.getNotAgreedReactCount);
 
 module.exports = router;

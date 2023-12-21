@@ -1,19 +1,31 @@
 const React = require("./../models/reactModel");
+const Post = require("./../models/postModel");
 const catchAsync = require("./../utils/catchAsync");
 const AppError = require("./../utils/appError");
 
 // impelemnt addReact method
 exports.addReact = catchAsync(async (req, res, next) => {
-  const { id } = req.params; // post id
-  const react = await req.user.createReact({
-    status: req.body.status,
-    postId: id,
-  });
-  if (!react) {
+  const { postID } = req.params; // post id
+  const post = await Post.findByPk(postID);
+
+  if (!post) {
     return next(
       new AppError("React to deleted post, something went wrong", 404)
     );
   }
+
+  await React.destroy({
+    where: {
+      postId: postID,
+      userId: req.user.id,
+    },
+  });
+
+  const react = await post.createReact({
+    status: req.body.status,
+    userId: req.user.id,
+  });
+
   res.status(201).json({
     status: "success",
     data: {
@@ -54,7 +66,7 @@ exports.getAgreedReactCount = catchAsync(async (req, res, next) => {
   const agreedReactCount = await React.count({
     where: {
       postId,
-      status: 1, // Assuming 1 represents "agreed" reacts
+      status: true, // Assuming 1 represents "agreed" reacts
     },
   });
 
@@ -66,21 +78,20 @@ exports.getAgreedReactCount = catchAsync(async (req, res, next) => {
   });
 });
 exports.getNotAgreedReactCount = catchAsync(async (req, res, next) => {
-    const postId = req.params.postID; // post id
-  
-    // Assuming you have a React model
-    const notAgreedReactCount = await React.count({
-      where: {
-        postId,
-        status: 0, // Assuming 0 represents "notAgreed" reacts
-      },
-    });
-  
-    res.status(200).json({
-      status: "success",
-      data: {
-        notAgreedReactCount,
-      },
-    });
+  const postId = req.params.postID; // post id
+
+  // Assuming you have a React model
+  const notAgreedReactCount = await React.count({
+    where: {
+      postId,
+      status: false, // Assuming 0 represents "notAgreed" reacts
+    },
   });
-  
+
+  res.status(200).json({
+    status: "success",
+    data: {
+      notAgreedReactCount,
+    },
+  });
+});
