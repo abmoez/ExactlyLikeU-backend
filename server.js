@@ -11,7 +11,14 @@ const app = require("./app");
 
 const sequelize = require("./utils/database");
 const UserModel = require("./models/userModel");
-
+const followingModel =require("./models/followingModel");
+const FollowersModel = require("./models/followersModel");
+const BlockedModel = require("./models/blockedModel");
+const reportModel= require("./models/reportModel");
+followingModel.belongsTo(UserModel,{constraints:true , onDelete : 'CASCADE' });
+FollowersModel.belongsTo(UserModel,{constraints:true , onDelete : 'CASCADE' });
+BlockedModel.belongsTo(UserModel,{constraints:true , onDelete : 'CASCADE' });
+reportModel.belongsTo(UserModel,{constraints:true , onDelete : 'CASCADE' });
 sequelize
   .sync({ alter: true })
   .then((results) => {
