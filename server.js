@@ -15,10 +15,18 @@ const followingModel = require("./models/followingModel");
 const FollowersModel = require("./models/followersModel");
 const BlockedModel = require("./models/blockedModel");
 const reportModel = require("./models/reportModel");
+const PostModel = require("./models/postModel");
+const ReactModel = require("./models/reactModel");
+
 followingModel.belongsTo(UserModel, { constraints: true, onDelete: "CASCADE" });
 FollowersModel.belongsTo(UserModel, { constraints: true, onDelete: "CASCADE" });
 BlockedModel.belongsTo(UserModel, { constraints: true, onDelete: "CASCADE" });
 reportModel.belongsTo(UserModel, { constraints: true, onDelete: "CASCADE" });
+
+UserModel.hasMany(PostModel, { constraints: true, onDelete: "CASCADE" });
+UserModel.hasMany(ReactModel, { constraints: true, onDelete: "CASCADE" });
+PostModel.hasMany(ReactModel, { constraints: true, onDelete: "CASCADE" });
+
 sequelize
   .sync({ alter: true })
   .then((results) => {

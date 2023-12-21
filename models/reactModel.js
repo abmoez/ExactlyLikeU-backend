@@ -1,8 +1,8 @@
 const { Sequelize, DataTypes } = require("sequelize");
 const sequelize = require("../utils/database");
 
-const Blocked = sequelize.define(
-  "blocked",
+const React = sequelize.define(
+  "react",
   {
     id: {
       type: Sequelize.INTEGER,
@@ -10,15 +10,11 @@ const Blocked = sequelize.define(
       allowNull: false,
       primaryKey: true,
     },
-    blockedUserId: {
-      type: Sequelize.INTEGER,
-      allowNull: false,
-    },
   },
   {
-    tableName: "blockedList",
+    tableName: "reacts",
     timestamps: true,
-    createdAt: "dateOfBlock",
   }
 );
-module.exports = Blocked;
+
+module.exports = React;
