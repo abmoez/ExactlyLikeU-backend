@@ -1,5 +1,6 @@
 const catchAsync = require("./../utils/catchAsync");
 const Post = require("./../models/postModel");
+const AppError = require("./../utils/appError");
 
 exports.getPost = catchAsync(async (req, res, next) => {
   const post = await Post.findByPk(req.params.postID);

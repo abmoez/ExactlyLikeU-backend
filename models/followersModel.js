@@ -10,7 +10,7 @@ const Follower = sequelize.define(
       allowNull: false,
       primaryKey: true,
     },
-    followedUserId: {
+    followerUserId: {
       type: Sequelize.INTEGER,
       allowNull: false,
     },

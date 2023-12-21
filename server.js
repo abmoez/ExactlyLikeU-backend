@@ -11,21 +11,33 @@ const app = require("./app");
 
 const sequelize = require("./utils/database");
 const UserModel = require("./models/userModel");
-const followingModel = require("./models/followingModel");
+const FollowingModel = require("./models/followingModel");
 const FollowersModel = require("./models/followersModel");
 const BlockedModel = require("./models/blockedModel");
 const reportModel = require("./models/reportModel");
 const PostModel = require("./models/postModel");
 const ReactModel = require("./models/reactModel");
 
-followingModel.belongsTo(UserModel, { constraints: true, onDelete: "CASCADE" });
-FollowersModel.belongsTo(UserModel, { constraints: true, onDelete: "CASCADE" });
-BlockedModel.belongsTo(UserModel, { constraints: true, onDelete: "CASCADE" });
-reportModel.belongsTo(UserModel, { constraints: true, onDelete: "CASCADE" });
+FollowingModel.belongsTo(UserModel, { constraints: true, onDelete: "CASCADE" });
+UserModel.hasMany(FollowingModel, { constraints: true, onDelete: "CASCADE" });
 
+FollowersModel.belongsTo(UserModel, { constraints: true, onDelete: "CASCADE" });
+UserModel.hasMany(FollowersModel, { constraints: true, onDelete: "CASCADE" });
+
+BlockedModel.belongsTo(UserModel, { constraints: true, onDelete: "CASCADE" });
+UserModel.hasMany(BlockedModel, { constraints: true, onDelete: "CASCADE" });
+
+PostModel.belongsTo(UserModel, { constraints: true, onDelete: "CASCADE" });
 UserModel.hasMany(PostModel, { constraints: true, onDelete: "CASCADE" });
+
+ReactModel.belongsTo(UserModel, { constraints: true, onDelete: "CASCADE" });
 UserModel.hasMany(ReactModel, { constraints: true, onDelete: "CASCADE" });
+
+ReactModel.belongsTo(PostModel, { constraints: true, onDelete: "CASCADE" });
 PostModel.hasMany(ReactModel, { constraints: true, onDelete: "CASCADE" });
+
+UserModel.hasMany(reportModel, { constraints: true, onDelete: "CASCADE" });
+reportModel.belongsTo(UserModel, { constraints: true, onDelete: "CASCADE" });
 
 sequelize
   .sync({ alter: true })
