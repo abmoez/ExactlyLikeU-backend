@@ -11,6 +11,9 @@ router.get("/logout", authController.logout);
 router.post("/forgotPassword", authController.forgotPassword);
 router.patch("/resetPassword/", authController.resetPassword);
 
+// For testing 
+router.get("/test", authController.protect,
+authController.restrictTo('admin','user'),userController.test)
 // all the following routes to be modefied
 // Protect all routes after this middleware
 router.use(authController.protect);

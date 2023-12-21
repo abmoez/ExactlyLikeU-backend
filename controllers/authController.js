@@ -119,7 +119,7 @@ exports.protect = catchAsync(async (req, res, next) => {
   const decoded = await promisify(jwt.verify)(token, process.env.JWT_SECRET);
 
   // 3) Check if user still exists
-  const currentUser = await User.findById(decoded.id);
+  const currentUser = await User.findByPk(decoded.id);
   if (!currentUser) {
     return next(
       new AppError(
@@ -173,10 +173,10 @@ exports.isLoggedIn = async (req, res, next) => {
   next();
 };
 
-exports.restrictTo = (...roles) => {
+exports.restrictTo = (...userTypes) => {
   return (req, res, next) => {
     // roles ['admin', 'lead-guide']. role='user'
-    if (!roles.includes(req.user.role)) {
+    if (!userTypes.includes(req.user.userType)) {
       return next(
         new AppError("You do not have permission to perform this action", 403)
       );

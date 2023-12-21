@@ -60,6 +60,14 @@ exports.createUser = (req, res) => {
   });
 };
 
+// For testing
+exports.test = (req,res) =>{
+  res.status(200).json({
+    status: 'success',
+    message: 'Protect workingggg'
+  });
+};
+
 exports.getUser = factory.getOne(User);
 exports.getAllUsers = factory.getAll(User);
 
