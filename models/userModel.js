@@ -20,12 +20,6 @@ const User = sequelize.define(
       unique: true,
       allowNull: false
     },
-    nickname: {
-      type: Sequelize.STRING,
-      unique:false,
-      allowNull: true,
-      defaultValue:"AppUser"
-    },
     gender: {
       type: DataTypes.STRING,
       allowNull: false,
@@ -35,7 +29,7 @@ const User = sequelize.define(
     },
     status: {
       type: DataTypes.STRING,
-      allowNull: false,
+      allowNull: true,
       defaultValue: 'single', // Default value for status
       validate: {
         isIn: [['single', 'married', 'divorced', 'widowed', 'other']]
@@ -83,6 +77,9 @@ User.prototype.changedPasswordAfter = function (JTWTimestamp) {
     return JTWTimestamp < changedTimestamp;
   }
   return false;
+};
+User.prototype.correctPassword = async function (candidatePassword, userPassword) {
+  return await bcrypt.compare(candidatePassword, userPassword);
 };
 
 module.exports = User;
