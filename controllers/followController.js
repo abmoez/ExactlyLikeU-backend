@@ -68,6 +68,11 @@ exports.getFollowings = catchAsync(async (req, res, next) => {
     where: {
       userId: req.params.userID,
     },
+    include: [
+      {
+        model: User,
+      },
+    ],
   });
   res.status(200).json({
     status: "success",
