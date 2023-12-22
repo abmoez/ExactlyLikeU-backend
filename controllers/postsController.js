@@ -1,5 +1,7 @@
 const catchAsync = require("./../utils/catchAsync");
 const Post = require("./../models/postModel");
+const User = require("./../models/userModel");
+const Follower = require("./../models/followersModel");
 const AppError = require("./../utils/appError");
 
 exports.getPost = catchAsync(async (req, res, next) => {
@@ -18,20 +20,21 @@ exports.getPost = catchAsync(async (req, res, next) => {
 });
 
 exports.getUserPosts = catchAsync(async (req, res, next) => {
-  const posts = await Post.findAll({
+  const { count, rows } = await Post.findAndCountAll({
     where: {
       userId: req.params.userID,
     },
   });
 
-  if (!posts) {
+  if (!rows) {
     return next(new AppError("No user found with that ID", 404));
   }
 
   res.status(200).json({
     status: "success",
+    count,
     data: {
-      data: posts,
+      data: rows,
     },
   });
 });
@@ -50,7 +53,12 @@ exports.addPost = catchAsync(async (req, res, next) => {
 });
 
 exports.deletePost = catchAsync(async (req, res, next) => {
-  const post = await Post.findByPk(req.params.postID);
+  const post = await findAll({
+    where: {
+      id: req.params.postID,
+      userId: req.user.id,
+    },
+  })[0];
 
   if (!post) {
     return next(new AppError("No post found with that ID", 404));
@@ -65,7 +73,12 @@ exports.deletePost = catchAsync(async (req, res, next) => {
 });
 
 exports.updatePost = catchAsync(async (req, res, next) => {
-  const post = await Post.findByPk(req.params.postID);
+  const post = await Post.findAll({
+    where: {
+      id: req.params.postID,
+      userId: req.user.id,
+    },
+  })[0];
 
   if (!post) {
     return next(new AppError("No post found with that ID", 404));
@@ -77,6 +90,32 @@ exports.updatePost = catchAsync(async (req, res, next) => {
     status: "success",
     data: {
       data: newPost,
+    },
+  });
+});
+
+exports.getFYP = catchAsync(async (req, res, next) => {
+  const posts = await User.findAll({
+    include: [
+      {
+        model: Follower,
+        where: {
+          followerUserId: req.user.id,
+        },
+        attributes: [],
+      },
+      {
+        model: Post,
+        attributes: ["body", "PostDate"],
+      },
+    ],
+    attributes: ["username"],
+  });
+
+  res.status(200).json({
+    status: "success",
+    data: {
+      posts,
     },
   });
 });
