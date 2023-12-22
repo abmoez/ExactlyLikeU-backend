@@ -7,6 +7,9 @@ const router = express();
 // Create a new post POST
 router.route("/").post(authController.protect, postsController.addPost);
 
+// get posts - user dependent GET
+router.route("/").get(authController.protect, postsController.getFYP);
+
 // Get A post , update post, delete post
 router
   .route("/:postID")
@@ -16,8 +19,6 @@ router
 
 // get posts (profile) GET :userID
 router.route("/users/:userID").get(postsController.getUserPosts);
-
-// get posts - user dependent GET
 
 // get trends GET
 
