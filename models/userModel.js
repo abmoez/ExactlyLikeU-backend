@@ -25,6 +25,7 @@ const User = sequelize.define(
       allowNull: false,
       validate: {
         isIn: [["male", "female"]], // Validation to allow only 'male' or 'female'
+        msg: 'Gender must be either "male" or "female"',
       },
     },
     status: {
