@@ -112,7 +112,19 @@ exports.getFYP = catchAsync(async (req, res, next) => {
   //   attributes: ["username", "id"],
   // });
 
-  const posts = await Post.findAll();
+  const posts = await User.findAll({
+    include: [
+      {
+        model: Follower,
+        attributes: [],
+      },
+      {
+        model: Post,
+        attributes: ["body", "PostDate", "id"],
+      },
+    ],
+    attributes: ["username", "id"],
+  });
 
   res.status(200).json({
     status: "success",
