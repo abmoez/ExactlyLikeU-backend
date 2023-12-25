@@ -40,7 +40,7 @@ UserModel.hasMany(reportModel, { constraints: true, onDelete: "CASCADE" });
 reportModel.belongsTo(UserModel, { constraints: true, onDelete: "CASCADE" });
 
 sequelize
-  .sync({ alter: true })
+  .sync()
   .then((results) => {
     console.log("DB connected");
   })
