@@ -95,22 +95,24 @@ exports.updatePost = catchAsync(async (req, res, next) => {
 });
 
 exports.getFYP = catchAsync(async (req, res, next) => {
-  const posts = await User.findAll({
-    include: [
-      {
-        model: Follower,
-        where: {
-          followerUserId: req.user.id,
-        },
-        attributes: [],
-      },
-      {
-        model: Post,
-        attributes: ["body", "PostDate", "id"],
-      },
-    ],
-    attributes: ["username", "id"],
-  });
+  // const posts = await User.findAll({
+  //   include: [
+  //     {
+  //       model: Follower,
+  //       where: {
+  //         followerUserId: req.user.id,
+  //       },
+  //       attributes: [],
+  //     },
+  //     {
+  //       model: Post,
+  //       attributes: ["body", "PostDate", "id"],
+  //     },
+  //   ],
+  //   attributes: ["username", "id"],
+  // });
+
+  const posts = await Post.findAll();
 
   res.status(200).json({
     status: "success",
