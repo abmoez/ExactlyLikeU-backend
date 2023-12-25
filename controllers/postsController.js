@@ -106,10 +106,10 @@ exports.getFYP = catchAsync(async (req, res, next) => {
       },
       {
         model: Post,
-        attributes: ["body", "PostDate"],
+        attributes: ["body", "PostDate", "id"],
       },
     ],
-    attributes: ["username"],
+    attributes: ["username", "id"],
   });
 
   res.status(200).json({
