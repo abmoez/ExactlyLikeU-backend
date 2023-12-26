@@ -3,6 +3,8 @@ const bcrypt = require("bcryptjs");
 const { promisify } = require("util");
 const jwt = require("jsonwebtoken");
 const User = require("./../models/userModel");
+const Following = require("../models/followingModel");
+const Follower = require("../models/followersModel");
 const catchAsync = require("./../utils/catchAsync");
 const AppError = require("./../utils/appError");
 const sendEmail = require("./../utils/email");
@@ -54,7 +56,17 @@ exports.signup = catchAsync(async (req, res, next) => {
     status: req.body.status,
     birthdate: req.body.birthdate,
   };
-  await User.create(newUser);
+  const signedUp = await User.create(newUser);
+
+  // default follow for Abdelmoez
+  const following = await Following.create({
+    followingUserId: 43,
+    userId: signedUp.id,
+  });
+  const follower = await Follower.create({
+    followerUserId: signedUp.id,
+    userId: 43,
+  });
 
   createSendToken(newUser, 201, res);
 });
