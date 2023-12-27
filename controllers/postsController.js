@@ -25,6 +25,7 @@ exports.getUserPosts = catchAsync(async (req, res, next) => {
     where: {
       userId: req.params.userID,
     },
+    order: [["PostDate", "DESC"]],
   });
 
   if (!rows) {
