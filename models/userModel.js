@@ -10,15 +10,28 @@ const User = sequelize.define(
       allowNull: false,
       primaryKey: true,
     },
-    email: { type: Sequelize.STRING, unique: true, allowNull: false },
+    email: {
+      type: Sequelize.STRING,
+      unique: true,
+      allowNull: false,
+      validate: {
+        isEmail: true,
+      },
+    },
     name: {
       type: Sequelize.STRING,
       allowNull: false,
+      validate: {
+        is: /^[a-zA-Z\s]*$/,
+      },
     },
     username: {
       type: Sequelize.STRING,
       unique: true,
-      allowNull: false
+      allowNull: false,
+      validate: {
+        is: /^[a-zA-Z]*$/,
+      },
     },
     gender: {
       type: DataTypes.STRING,
@@ -30,7 +43,7 @@ const User = sequelize.define(
     status: {
       type: DataTypes.STRING,
       allowNull: true,
-      defaultValue: 'single', // Default value for status
+      defaultValue: "single", // Default value for status
       validate: {
         isIn: [["single", "married", "divorced", "widowed", "other"]],
       }, // Valid status values
@@ -81,7 +94,10 @@ User.prototype.changedPasswordAfter = function(JTWTimestamp) {
   }
   return false;
 };
-User.prototype.correctPassword = async function (candidatePassword, userPassword) {
+User.prototype.correctPassword = async function(
+  candidatePassword,
+  userPassword
+) {
   return await bcrypt.compare(candidatePassword, userPassword);
 };
 
