@@ -3,6 +3,7 @@ const Post = require("./../models/postModel");
 const User = require("./../models/userModel");
 const Follower = require("./../models/followersModel");
 const AppError = require("./../utils/appError");
+const { Op } = require("sequelize");
 
 exports.getPost = catchAsync(async (req, res, next) => {
   const post = await Post.findByPk(req.params.postID);
@@ -107,12 +108,19 @@ exports.getFYP = catchAsync(async (req, res, next) => {
       {
         model: Post,
         attributes: ["body", "PostDate", "id"],
+        where: {
+          userId: {
+            [Op.ne]: req.user.id,
+          },
+        },
       },
     ],
     attributes: ["username", "id"],
   });
 
-  const sentPosts = posts.filter((obj) => obj.posts.length > 0);
+  const sentPosts = posts
+    .filter((obj) => obj.posts.length > 0)
+    .sort(() => Math.random() - 0.5);
 
   res.status(200).json({
     status: "success",
