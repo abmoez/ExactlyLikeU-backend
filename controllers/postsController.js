@@ -99,9 +99,9 @@ exports.getFYP = catchAsync(async (req, res, next) => {
     include: [
       {
         model: Follower,
-        where: {
-          followerUserId: req.user.id,
-        },
+        // where: {
+        //   followerUserId: req.user.id,
+        // },
         attributes: [],
       },
       {
@@ -112,10 +112,12 @@ exports.getFYP = catchAsync(async (req, res, next) => {
     attributes: ["username", "id"],
   });
 
+  const sentPosts = posts.filter((obj) => obj.posts.length > 0);
+
   res.status(200).json({
     status: "success",
     data: {
-      posts,
+      posts: sentPosts,
     },
   });
 });
